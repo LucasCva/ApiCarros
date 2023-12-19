@@ -1,4 +1,4 @@
-from typing import List, Type
+from typing import List
 
 from fastapi import APIRouter
 from fastapi.params import Depends
@@ -29,7 +29,6 @@ class CarroRequest(BaseModel):
 @router.get('/', response_model=List[CarroResponse])
 def listar_carros(db: Session = Depends(get_db)) -> List[CarroResponse]:
     return db.query(Carros).all()
-
 
 
 # metodo criar carro
