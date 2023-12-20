@@ -2,7 +2,7 @@ from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from main import app
-from models.carro_model import Carros
+from database.models.carro_model import Carros
 from shared.dependencies import get_db
 
 # SQLALCHEMY_DATABASE_URL = "sqlite:///./sql_app.db"

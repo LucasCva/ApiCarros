@@ -2,8 +2,6 @@ import uvicorn
 from fastapi import FastAPI
 
 from routers import carros_router
-from shared.database import Base, engine
-from models.carro_model import Carros
 
 app = FastAPI()
 

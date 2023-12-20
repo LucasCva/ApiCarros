@@ -1,60 +1,30 @@
-from typing import List, Optional
+from typing import List, Type
+
 from fastapi import APIRouter, HTTPException
 from fastapi.params import Depends, Path
-from pydantic import BaseModel
-from sqlalchemy import Null
 from sqlalchemy.orm import Session
 
-from models.carro_model import Carros
+from database.models.carro_model import Carros
+from models.carro_model import CarroResponse, CarroRequest, CarroUpdate
 from shared.dependencies import get_db
 
 # instanciando o api router
 router = APIRouter(prefix='/carros')
 
 
-class CarroResponse(BaseModel):
-    id: int
-    nome: str
-    ano: int
-    modelo: str
-
-
-class CarroRequest(BaseModel):
-    nome: str
-    ano: int
-    modelo: str
-
-
-class CarroUpdate(BaseModel):
-    nome: Optional[str] = Null
-    ano: Optional[int] = Null
-    modelo: Optional[str] = Null
-
-
 # Create carro
 @router.post('/', response_model=CarroResponse, status_code=201)
 def criar_carro(carro_request: CarroRequest, db: Session = Depends(get_db)) -> CarroResponse:
-    # carro = Carros(nome= carro.nome, ano=carro.ano, modelo=carro.modelo)
-    carro = Carros(
-        nome=carro_request.nome,
-        ano=carro_request.ano,
-        modelo=carro_request.modelo
-    )
+    carro = Carros(**carro_request.model_dump())
     db.add(carro)
     db.commit()
     db.refresh(carro)
-
-    return CarroResponse(
-        id=carro.id,
-        nome=carro.nome,
-        ano=carro.ano,
-        modelo=carro.modelo
-    )
+    return CarroResponse(**carro.__dict__)
 
 
 # Listar carros
 @router.get('/', response_model=List[CarroResponse])
-def listar_carros(db: Session = Depends(get_db)) -> List[CarroResponse]:
+def listar_carros(db: Session = Depends(get_db)) -> list[Type[Carros]]:
     return db.query(Carros).all()
 
 
@@ -66,13 +36,7 @@ def encontrar_carro_pelo_id(id_carro: int = Path(..., ge=1), db: Session = Depen
     if not carro:
         raise HTTPException(status_code=404, detail='Carro não encontrado')
 
-    return CarroResponse(
-        id=carro.id,
-        nome=carro.nome,
-        ano=carro.ano,
-        modelo=carro.modelo
-
-    )
+    return CarroResponse(**carro.__dict__)
 
 
 # Update carro
@@ -92,12 +56,7 @@ def modificar_carro(
     db.commit()
     db.refresh(carro)
 
-    return CarroResponse(
-        id=carro.id,
-        nome=carro.nome,
-        ano=carro.ano,
-        modelo=carro.modelo
-    )
+    return CarroResponse(**carro.__dict__)
 
 
 # Delete carro

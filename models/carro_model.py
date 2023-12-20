@@ -1,12 +1,23 @@
-from sqlalchemy import Column, Integer, String, Numeric
+from typing import Optional
 
-from shared.database import Base
+from pydantic import BaseModel
 
 
-# Modelo de tabela para o banco de dados
-class Carros(Base):
-    __tablename__ = 'carros'
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    nome = Column(String(30))
-    ano = Column(Integer)
-    modelo = Column(String(30))
+
+class CarroResponse(BaseModel):
+    id: int
+    nome: str
+    ano: int
+    modelo: str
+
+
+class CarroRequest(BaseModel):
+    nome: str
+    ano: int
+    modelo: str
+
+
+class CarroUpdate(BaseModel):
+    nome: Optional[str] = None
+    ano: Optional[int] = None
+    modelo: Optional[str] = None
