@@ -76,7 +76,7 @@ def encontrar_carro_pelo_id(id_carro: int = Path(..., ge=1), db: Session = Depen
 
 
 # Update carro
-@router.post('/{id_carro}/')
+@router.put('/{id_carro}/')
 def modificar_carro(
         carro_updade: CarroUpdate,
         id_carro: int = Path(..., ge=1),
